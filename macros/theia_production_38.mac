@@ -1,0 +1,39 @@
+## Geometry
+/rat/db/set DETECTOR experiment "Theia"
+/rat/db/set DETECTOR geo_file "Theia/Theia_25kt.geo"
+
+## Set PMTInfo
+/rat/db/set GEO[inner_pmts] pos_table "PMTINFO_25kt"
+/rat/db/set GEO[veto_pmts] enable 0
+/rat/db/set GEO[inner_pmts] end_idx 46728
+/rat/db/set GEO[inner_pmts] pmt_model "r7081pe"
+/rat/db/set GEO[inner_pmts] efficiency_correction 0.9
+
+/rat/physics/setCerenkovMaxNumPhotonsPerStep 4 # SNO+ Default
+
+## Set Materials
+
+## Setting DAQ
+
+## Begin event processor loop
+
+/run/initialize
+
+/rat/proc forcedtrigger
+
+/rat/proc count
+/rat/procset update 1
+
+/rat/proclast outntuple
+/rat/procset include_mcparticles 1
+
+/rat/procset file "/users/3/mfani/Theia/data/outputs/numu/theia_numu_000801_000900.root"
+
+## Generators 
+/generator/add rootracker /users/3/mfani/Theia/data/inputs/numu_100000.rootracker.root:fill:uniform:100:801
+
+/generator/pos/set 0.0 0.0 0.0
+
+## Run 
+
+/run/beamOn 100

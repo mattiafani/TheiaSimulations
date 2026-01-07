@@ -1,0 +1,57 @@
+## Geo File only
+/rat/db/set DETECTOR experiment "Theia"
+/rat/db/set DETECTOR geo_file "Theia/Theia_25kt.geo"
+
+## Set PMTInfo
+/rat/db/set GEO[inner_pmts] pos_table "PMTINFO_25kt"
+/rat/db/set GEO[veto_pmts] enable 0
+/rat/db/set GEO[inner_pmts] end_idx 46728
+/rat/db/set GEO[inner_pmts] pmt_model "r7081pe"
+/rat/db/set GEO[inner_pmts] efficiency_correction 0.9
+
+/rat/physics/setCerenkovMaxNumPhotonsPerStep 4 # SNO+ Default
+
+## Set Materials
+#/rat/db/set GEO[world] material "rock"
+#/rat/db/set GEO[inner_surface] material "steel"
+#/rat/db/set GEO[fiducial_volume] material "wbls_5pct"
+
+## Setting DAQ
+#/rat/db/set DAQ[SplitEVDAQ] digitize true
+#/rat/db/set DAQ[SplitEVDAQ] digitizer_name "V1730"
+
+## Begin event processor loop
+
+/run/initialize
+
+#/tracking/storeTrajectory 1
+
+#/rat/proc prune
+#/rat/procset prune "mc.track:opticalphoton"
+
+/rat/proc forcedtrigger
+#/rat/proc WaveformPrep
+#/rat/proc WaveformAnalysisLognormal
+
+/rat/proc count
+/rat/procset update 1
+
+/rat/proclast outntuple
+#/rat/procset include_pmthits 1
+/rat/procset include_mcparticles 1
+#/rat/procset include_mchits 1
+# /rat/procset include_tracking 1
+#/rat/procset include_digitizerwaveforms 1
+#/rat/procset include_digitizerhits 1
+
+/rat/procset file "test_600_700.root"
+
+## Generators #################################################################
+
+# /generator/add vertexfile ~/transfer/out.gntp.o16.rhc.nbe.nbm.gtrk.998800-998900.randomVtx_998800_998900.roo#t
+/generator/add rootracker /users/3/mfani/Theia/data/inputs/numu_100000.rootracker.root:fill:uniform:100:600
+/generator/pos/set 0.0 0.0 0.0
+
+## Run ########################################################################
+
+/run/beamOn 100
